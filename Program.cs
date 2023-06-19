@@ -1,5 +1,11 @@
+using Telegram.Bot;
+using Telegram.Bot.Polling;
+
 var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+builder.Services.AddHostedService<BotBackgroundService>();
+builder.Services.AddTransient<IUpdateHandler, UpdateHandler>();
+builder.Services.AddSingleton<ITelegramBotClient, TelegramBotClient>(
+    p=>new TelegramBotClient(builder.Configuration.GetValue("BotApiKey",string.Empty)));
 
-app.Run();
+builder.Build().Run();
